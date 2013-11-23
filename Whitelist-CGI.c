@@ -10,7 +10,6 @@ int main(void) {
   mkdir("/data/www/whitelist", 0777);
   mkdir("/data/www/cgi-bin", 0777);
 
-
   //Print required header information
   //Note: Date is currently static however no impact on CC
   printf( "HTTP/1.1 200 OK\n" );
