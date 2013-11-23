@@ -19,9 +19,9 @@ pLog() {
         echo "$LogName: $1"
 }
 
-##################################
-# Now we start the actual script #
-##################################
+#######################################
+# Begin "apps.conf" Update Proceedure #
+#######################################
 
 # Start infinite loop to keep the program running
 while true
