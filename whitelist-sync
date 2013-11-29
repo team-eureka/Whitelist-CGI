@@ -4,14 +4,14 @@
 LogName="Whitelist-Sync"
 
 # Do we have a revision?
-if [ -f /data/www/whitelist/apps.conf ]
+if [ -f /data/eureka/apps.conf ]
 then 
-	Revision=`busybox sha1sum /data/www/whitelist/apps.conf | busybox awk '{ print $1 }'`
+	Revision=`busybox sha1sum /data/eureka/apps.conf | busybox awk '{ print $1 }'`
 else
 	Revision="NoFile"
 fi
 
-#URL for the Update Server
+#URL for the Update Server (will get overwritten by EurekaSettings if defined)
 URL="http://pdl.team-eureka.com/applist.php?revision=$Revision"
 
 # Prefixed log messages are easier to distinguish
@@ -38,10 +38,34 @@ do
 	# We are running, so the world must know
 	touch /tmp/.whitelist-sync
 	
-	# Are we allowed to run?
-	if [ -f /chrome/disable_whitelist ]
+	# Are we a part of the EurekaROM? If so, get info from the EurekaSettings app
+	if [ -f /usr/bin/EurekaSettings]
 	then
-		pLog "Whitelist Syncing disabled per user request, Terminating"
+		# Define update URL
+		if ["$(EurekaSettings get WhiteList downloadurl)" != ""]
+		then
+			URL="$(EurekaSettings get WhiteList downloadurl)"
+		fi		
+		# Define if we run or not
+		if ["$(EurekaSettings get WhiteList useLocal)" == "0" && "$(EurekaSettings get WhiteList useGoogle)" == "0"]
+		then
+			DISABLE_UPDATE="0"
+		else
+			DISABLE_UPDATE="1"
+		fi
+	else
+		if [ -f "/chrome/disable_ota]
+		then
+			DISABLE_UPDATE="1" 
+		else
+			DISABLE_UPDATE="0"
+		fi
+	fi
+	
+	# Are we allowed to run?
+	if [ $DISABLE_OTA -eq "1" ]
+	then
+		pLog "Whitelist Syncing disabled, Terminating"
 		
 		# Create a empty loop so this script is never ran again.
 		while true
@@ -54,6 +78,12 @@ do
 		
 		# Somehow, if we break out, exit, do NOT go through the rest of the code
 		continue
+	fi
+	
+	# Before we run for a update check, make sure our folder exists
+	if [ ! -d /data/eureka ]
+	then
+		mkdir /data/eureka && chmod -R 777 /data/eureka
 	fi
 
 	# Check for the update
@@ -76,7 +106,7 @@ do
 	elif [ "$Response" != "NoUpdate" ]
 	then
 		pLog "Update Found! Downloading now!"
-		busybox wget -q "$Response" -O /data/www/whitelist/apps.conf
+		busybox wget -q "$Response" -O /data/eureka/apps.conf
 		pLog "Updated AppList Downloaded Successfully"
 		
 		# Delete run file
