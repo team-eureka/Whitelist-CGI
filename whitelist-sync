@@ -54,7 +54,7 @@ do
 			DISABLE_UPDATE="1"
 		fi
 	else
-		if [ -f "/chrome/disable_ota]
+		if [ -f "/chrome/disable_ota"]
 		then
 			DISABLE_UPDATE="1" 
 		else
