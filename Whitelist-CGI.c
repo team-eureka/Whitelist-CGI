@@ -7,8 +7,8 @@
 
 int main(void) {
   //Check for directory structure in Data (note using mkdir over stat checks for speed considerations)
-  mkdir("/data/www/whitelist", 0777);
-  mkdir("/data/www/cgi-bin", 0777);
+  //Now that www is in system, it will be created by imager.sh, but we still need our download folder
+  mkdir("/data/eureka", 0777);
 
   //Print required header information
   //Note: Date is currently static however no impact on CC
@@ -34,10 +34,10 @@ int main(void) {
   char buf[1000];
 
   //check if whitelist apps.conf exists in data (if not use system apps.conf)
-  if(access("/data/www/whitelist/apps.conf", F_OK) != -1 ) {
-      ptr_file =fopen("/data/www/whitelist/apps.conf","r");
+  if(access("/data/eureka/apps.conf", F_OK) != -1 ) {
+      ptr_file =fopen("/data/eureka/apps.conf","r");
   }  else {
-      ptr_file=fopen("/system/etc/apps.conf", "r");
+      ptr_file=fopen("/system/usr/share/eureka-apps/configs/apps.conf", "r");
   }
 
   while (fgets(buf,1000, ptr_file)!=NULL)
