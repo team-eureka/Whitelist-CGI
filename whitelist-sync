@@ -12,7 +12,7 @@ else
 fi
 
 #URL for the Update Server (will get overwritten by EurekaSettings if defined)
-URL="http://pdl.team-eureka.com/applist.php?revision=$Revision"
+URL="http://pwl.team-eureka.com/applist.php"
 
 # Prefixed log messages are easier to distinguish
 pLog() {
@@ -29,7 +29,7 @@ do
 	pLog "Running $LogName"
 
 	# Are we already running?
-	if [ -f /tmp/.whitelist-sync]
+	if [ -f /tmp/.whitelist-sync ]
 	then
 		pLog "Already Running, Terminating"
 		exit 1
@@ -39,22 +39,22 @@ do
 	touch /tmp/.whitelist-sync
 	
 	# Are we a part of the EurekaROM? If so, get info from the EurekaSettings app
-	if [ -f /usr/bin/EurekaSettings]
+	if [ -f /usr/bin/EurekaSettings ]
 	then
 		# Define update URL
-		if ["$(EurekaSettings get WhiteList downloadurl)" != ""]
+		if [ "$(EurekaSettings get WhiteList downloadurl)" != "" ]
 		then
 			URL="$(EurekaSettings get WhiteList downloadurl)"
 		fi		
 		# Define if we run or not
-		if ["$(EurekaSettings get WhiteList useLocal)" == "0" && "$(EurekaSettings get WhiteList useGoogle)" == "0"]
+		if [ "$(EurekaSettings get WhiteList useLocal)" == "0" && "$(EurekaSettings get WhiteList useGoogle)" == "0" ]
 		then
 			DISABLE_UPDATE="0"
 		else
 			DISABLE_UPDATE="1"
 		fi
 	else
-		if [ -f "/chrome/disable_ota"]
+		if [ -f "/chrome/disable_ota" ]
 		then
 			DISABLE_UPDATE="1" 
 		else
@@ -62,8 +62,8 @@ do
 		fi
 	fi
 	
-	# Are we allowed to run?
 	if [ $DISABLE_OTA -eq "1" ]
+	# Are we allowed to run?
 	then
 		pLog "Whitelist Syncing disabled, Terminating"
 		
@@ -88,7 +88,7 @@ do
 
 	# Check for the update
 	pLog "Checking for Whitelist Updates"
-	Response="$(busybox wget -q $URL -O - )"
+	Response="$(busybox wget -q $URL?revision=$Revision -O - )"
 
 	# Error checking for update, due to server/web issues
 	if [ $? -ne 0 ]
@@ -112,7 +112,6 @@ do
 		# Delete run file
 		rm /tmp/.whitelist-sync
 
-		fi
 	else
 		pLog "No Update Required!"
 	fi
