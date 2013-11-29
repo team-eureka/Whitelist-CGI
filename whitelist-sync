@@ -47,7 +47,7 @@ do
 			URL="$(EurekaSettings get WhiteList downloadurl)"
 		fi		
 		# Define if we run or not
-		if [ "$(EurekaSettings get WhiteList useLocal)" == "0" && "$(EurekaSettings get WhiteList useGoogle)" == "0" ]
+		if [ "$(EurekaSettings get WhiteList useLocal)" == "0" ] && [ "$(EurekaSettings get WhiteList useGoogle)" == "0" ]
 		then
 			DISABLE_UPDATE="0"
 		else
@@ -62,7 +62,7 @@ do
 		fi
 	fi
 	
-	if [ $DISABLE_OTA -eq "1" ]
+	if [ $DISABLE_UPDATE -eq "1" ]
 	# Are we allowed to run?
 	then
 		pLog "Whitelist Syncing disabled, Terminating"
