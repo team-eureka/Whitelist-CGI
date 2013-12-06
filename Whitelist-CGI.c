@@ -41,7 +41,7 @@ int main(void) {
   printf( "Transfer-Encoding: chunked\n\n" );
 
   //Add configuration detail to whitelist
-  printf( ")]}'\n{\"configuration\":{\"idle_screen_app\":\"00000000-0000-0000-0000-000000000000\"}, \"enabled_app_ids\":[\"087FCD5C\",\"2EEAFD9A\",\"30F4C306\",\"514E28B7\",\"552553BC\",\"674A0243\",\"6EBBD6E0\",\"85F0B427\",\"B88E20BD\",\"BFEBD3F1\",\"C27C2913\",\"C8939A18\",\"CC1AD845\",\"D6045317\",\"D8D09EE8\",\"E1F15514\",\"E9250490\",\"E93E3FCD\",\"EA126165\",\"ECE66B88\",\"FEE7AE75\"],\"applications\":\n" );
+  printf( ")]}'\n{\"configuration\":{\"idle_screen_app\":\"00000000-0000-0000-0000-000000000000\"} ,\"applications\":\n" );
 
   //Read whitelist from file, print to web.
   FILE *ptr_file;
