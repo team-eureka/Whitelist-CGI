@@ -41,21 +41,13 @@ do
 		# Define if we run or not
 		if [ "$(EurekaSettings get WhiteList useLocal)" == "0" ] && [ "$(EurekaSettings get WhiteList useGoogle)" == "0" ]
 		then
-			DISABLE_UPDATE="0"
+			DISABLE_SYNC="0"
 		else
-			DISABLE_UPDATE="1"
-		fi
-	else
-		if [ -f "/chrome/disable_ota" ]
-		then
-			DISABLE_UPDATE="1" 
-		else
-			DISABLE_UPDATE="0"
+			DISABLE_SYNC="1"
 		fi
 	fi
 	
-	if [ $DISABLE_UPDATE -eq "1" ]
-	# Are we allowed to run?
+	if [ $DISABLE_SYNC -eq "1" ]
 	then
 		pLog "Whitelist Syncing disabled, Terminating"
 		
