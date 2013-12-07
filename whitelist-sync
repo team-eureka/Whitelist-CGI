@@ -3,14 +3,6 @@
 # Name of application, shows up in logcat
 LogName="Whitelist-Sync"
 
-# Do we have a revision?
-if [ -f /data/eureka/apps.conf ]
-then 
-	Revision=`busybox sha1sum /data/eureka/apps.conf | busybox awk '{ print $1 }'`
-else
-	Revision="NoFile"
-fi
-
 #URL for the Update Server (will get overwritten by EurekaSettings if defined)
 URL="http://pwl.team-eureka.com/applist.php"
 
@@ -87,38 +79,13 @@ do
 	fi
 
 	# Check for the update
-	pLog "Checking for Whitelist Updates"
-	Response="$(busybox wget -q $URL?revision=$Revision -O - )"
+	pLog "Syncing with Whitelist Server"
+	busybox wget -q "$URL" -O /data/eureka/apps.conf
+	pLog "Updated AppList Downloaded Successfully"
 
-	# Error checking for update, due to server/web issues
-	if [ $? -ne 0 ]
-	then
-		pLog "Error Checking for update, Connection Issues"
-		pLog "Restarting Service in 5 Minutes"
-	
-		# Delete run file
-		rm /tmp/.whitelist-sync
-	
-		sleep 300
-		continue
-		
-	# Update is available, do something
-	elif [ "$Response" != "NoUpdate" ]
-	then
-		pLog "Update Found! Downloading now!"
-		busybox wget -q "$Response" -O /data/eureka/apps.conf
-		pLog "Updated AppList Downloaded Successfully"
-		
-		# Delete run file
-		rm /tmp/.whitelist-sync
-
-	else
-		pLog "No Update Required!"
-	fi
-	
 	# Sleep a while
-	pLog "Sleeping 20 hours"
-	sleep 72000
+	pLog "Sleeping 10 hours"
+	sleep 36000
 	
 	# Delete run file
 	rm /tmp/.whitelist-sync
