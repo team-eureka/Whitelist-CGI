@@ -1,6 +1,7 @@
 //
 // compiled with arm-unknown-linux-gnueabi-gcc Whitelist-CGI.c -o Whitelist-CGI.cgi
 //
+#define sizearray(a)  (sizeof(a) / sizeof((a)[0]))
 
 #include "stdio.h"
 #include "unistd.h"
@@ -40,26 +41,28 @@ int main(void) {
   printf( "Alternate-Protocol: 443:quic\n" );
   printf( "Transfer-Encoding: chunked\n\n" );
 
-  //Add configuration detail to whitelist
-  printf( ")]}'\n{\"configuration\":{\"idle_screen_app\":\"00000000-0000-0000-0000-000000000000\"} ,\"applications\":\n" );
-
   //Read whitelist from file, print to web.
   FILE *ptr_file;
   char buf[1000];
+
+  //If web is up, force update check
+  ptr_file = popen("ping -c 1 -w 1 google.com > /dev/null ; echo $?", "r");
+  while (fgets(path, sizeof(path)-1, ptr_file) != NULL) {
+	if (compStr(path, "0\n", sizearray(path) )) { 
+		system( "busybox sh /system/usr/share/eureka-apps/whitelist-sync/whitelist-sync > /tmp/whitelist-sync.log" );
+	}
+   }
 
   //check if whitelist apps.conf exists in data (if not use system apps.conf)
   if(access("/data/eureka/apps.conf", F_OK) != -1 ) {
       ptr_file =fopen("/data/eureka/apps.conf","r");
   }  else {
-      ptr_file=fopen("/system/usr/share/eureka-apps/configs/apps.conf", "r");
+	ptr_file=fopen("/system/usr/share/eureka-apps/configs/apps.conf", "r");
   }
 
   while (fgets(buf,1000, ptr_file)!=NULL)
       printf("%s",buf);
   fclose(ptr_file);
-
-  //Close whitelist configuration
-  printf( "}" );
 
 	}
 

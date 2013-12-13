@@ -15,20 +15,7 @@ pLog() {
 # Begin "apps.conf" Update Proceedure #
 #######################################
 
-# Start infinite loop to keep the program running
-while true
-do
 	pLog "Running $LogName"
-
-	# Are we already running?
-	if [ -f /tmp/.whitelist-sync ]
-	then
-		pLog "Already Running, Terminating"
-		exit 1
-	fi
-	
-	# We are running, so the world must know
-	touch /tmp/.whitelist-sync
 	
 	# Are we a part of the EurekaROM? If so, get info from the EurekaSettings app
 	if [ -f /usr/bin/EurekaSettings ]
@@ -38,30 +25,6 @@ do
 		then
 			URL="$(EurekaSettings get WhiteList downloadurl)"
 		fi		
-		# Define if we run or not
-		if [ "$(EurekaSettings get WhiteList useLocal)" == "0" ] && [ "$(EurekaSettings get WhiteList useGoogle)" == "0" ]
-		then
-			DISABLE_SYNC="0"
-		else
-			DISABLE_SYNC="1"
-		fi
-	fi
-	
-	if [ $DISABLE_SYNC -eq "1" ]
-	then
-		pLog "Whitelist Syncing disabled, Terminating"
-		
-		# Create a empty loop so this script is never ran again.
-		while true
-		do
-			sleep 72000
-		done
-		
-		# Delete run file
-		rm /tmp/.whitelist-sync
-		
-		# Somehow, if we break out, exit, do NOT go through the rest of the code
-		continue
 	fi
 	
 	# Before we run for a update check, make sure our folder exists
@@ -74,12 +37,3 @@ do
 	pLog "Syncing with Whitelist Server"
 	busybox wget -q "$URL" -O /data/eureka/apps.conf
 	pLog "Updated AppList Downloaded Successfully"
-
-	# Sleep a while
-	pLog "Sleeping 10 hours"
-	sleep 36000
-	
-	# Delete run file
-	rm /tmp/.whitelist-sync
-
-done
