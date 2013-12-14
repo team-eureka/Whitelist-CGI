@@ -20,10 +20,10 @@ pLog() {
 	# Are we a part of the EurekaROM? If so, get info from the EurekaSettings app
 	if [ -f /usr/bin/EurekaSettings ]
 	then
-		# Define update URL
-		if [ "$(EurekaSettings get WhiteList downloadurl)" != "" ]
+		# Define update URL based on custom settings, if defined
+		if [ "$(EurekaSettings get WhiteList useSelection)" == "3" ]
 		then
-			URL="$(EurekaSettings get WhiteList downloadurl)"
+			URL="$(EurekaSettings get WhiteList customURL)"
 		fi		
 	fi
 	
