@@ -12,7 +12,7 @@ int main(void) {
   char path[1035];
 
   //Check if Whitelist bypass to Google is enabled
-  fp = popen("EurekaSettings get WhiteList useGoogle", "r");
+  fp = popen("EurekaSettings get WhiteList useSelection", "r");
   //error out if command fails
   if (fp == NULL) {
   printf("Failed to run command\n" );
