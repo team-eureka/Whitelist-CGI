@@ -33,7 +33,12 @@ pLog() {
 		mkdir /data/eureka && chmod -R 777 /data/eureka
 	fi
 
-	# Check for the update
-	pLog "Syncing with Whitelist Server"
-	busybox wget -q "$URL" -O /data/eureka/apps.conf
-	pLog "Updated AppList Downloaded Successfully"
+	# Check for the update if we are set to not use local
+	if [ "$(EurekaSettings get WhiteList useSelection)" == "2" ]
+	then
+		pLog "Use local enabled, sync disabled."
+	else
+		pLog "Syncing with Whitelist Server"
+		busybox wget -q "$URL" -O /data/eureka/apps.conf
+		pLog "Updated AppList Downloaded Successfully"	
+	fi
