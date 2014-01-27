@@ -3,8 +3,13 @@
 # Name of application, shows up in logcat
 LogName="Whitelist-Sync"
 
+# Build version, revision and device serial hash, normally no need to change these
+BuildVersion="$(getprop ro.build.version.incremental)"
+BuildRevision="$(cat /system/etc/chromecast-ota.rev)"
+SerialHash=`busybox sha1sum /factory/serial.txt | busybox awk '{ print $1 }'` # We only use your serial hash
+
 #URL for the Update Server (will get overwritten by EurekaSettings if defined)
-URL="http://pwl.team-eureka.com/applist.php"
+URL="http://pwl.team-eureka.com/applist.php?version=$BuildVersion.$BuildRevision&serial=$SerialHash"
 
 # Prefixed log messages are easier to distinguish
 pLog() {
