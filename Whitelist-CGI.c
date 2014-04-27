@@ -5,8 +5,66 @@
 
 #include "stdio.h"
 #include "unistd.h"
+#include "stdlib.h"
+#include "string.h"
+
+
+#define QS_LEN 65536
+
 
 int main(void) {
+
+  //Initialise variables for whitelist call
+  char *var_d;
+  char *var_b;
+  char *var_t;
+  char *var_s;
+
+  char *data;
+  char *token;
+  char *key;
+  char *value;
+
+
+  //Allocate memory to variables
+  data = malloc(QS_LEN);
+  token = malloc(QS_LEN);
+  key = malloc(QS_LEN);
+  value = malloc(QS_LEN);
+
+
+  var_d = malloc(QS_LEN);
+  var_b = malloc(QS_LEN);
+  var_t = malloc(QS_LEN);
+  var_s = malloc(QS_LEN);
+
+  //Query request string and allocate values received to variables
+  if (getenv("QUERY_STRING"))
+  {
+   token = strtok (getenv("QUERY_STRING"),"&");
+   while (token != NULL)
+   {
+	sscanf(token, "%[^=]=%65536s", key, value);
+	if ( compStr(key, "d", sizearray(key) ))
+	{
+		strcpy(var_d, value);
+	}
+	if ( compStr(key, "b", sizearray(key) ))
+	{
+		strcpy(var_b, value);
+	}
+	if ( compStr(key, "t", sizearray(key) ))
+	{
+		strcpy(var_t, value);
+	}
+	if ( compStr(key, "s", sizearray(key) ))
+	{
+		strcpy(var_s, value);
+	}
+	token = strtok (NULL, "&");
+   }
+  }
+
   FILE *fp;
   mkdir("/data/eureka", 0777);
   char path[1035];
@@ -23,7 +81,21 @@ int main(void) {
   	if(compStr(path, "1")){
 		//Bypass enabled, redirect to Google
   		printf( "HTTP/1.1 302 Object moved\n" );
-  		printf( "Location: http://clients3.google.com/cast/chromecast/device/baseconfig?b=14651\n\n\n" );
+		//If all device variables provided pass onto google
+		if ((strlen(var_b) != 0) && (strlen(var_s) != 0) && (strlen(var_d) != 0) && (strlen(var_t) != 0))
+		{
+		 printf( "Location: http://clients3.google.com/cast/chromecast/device/baseconfig?b=%s&d=%s&t=%s&s=%s\n\n\n", var_b, var_d, var_t, var_s);
+		}
+		else{
+		//Not all device variables provided, check for device version config and pass to google
+		  if(strlen(var_b) != 0){
+  			printf( "Location: http://clients3.google.com/cast/chromecast/device/baseconfig?b=%s\n\n\n", var_b);
+  		  }
+		  else{
+			//device config version not provided, proceed to google emulating 14651
+  			printf( "Location: http://clients3.google.com/cast/chromecast/device/baseconfig?b=14651\n\n\n" );
+		  }
+		}
 	} else {
 
   //Redirect not present, present local whitelist
@@ -62,11 +134,11 @@ int main(void) {
 
   while (fgets(buf,1000, ptr_file)!=NULL)
       printf("%s",buf);
-  fclose(ptr_file);
+      fclose(ptr_file);
 
 	}
-
   }
+
   pclose(fp);
   return 0;
 
