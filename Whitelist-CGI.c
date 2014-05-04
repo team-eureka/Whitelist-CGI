@@ -20,7 +20,6 @@ int main(void)
     char *var_b;
     char *var_t;
     char *var_s;
-    char *var_v2;
     char *var_a;
 
     char *data;
@@ -41,7 +40,6 @@ int main(void)
     var_b = malloc(QS_LEN);
     var_t = malloc(QS_LEN);
     var_s = malloc(QS_LEN);
-    var_v2 = malloc(QS_LEN);
     var_a = malloc(QS_LEN);
 
     //Query request string and allocate values received to variables
@@ -66,10 +64,6 @@ int main(void)
             if ( compStr(key, "s", sizearray(key) ))
             {
                 strcpy(var_s, value);
-            }
-            if ( compStr(key, "v2", sizearray(key) ))
-            {
-                strcpy(var_v2, value);
             }
             if ( compStr(key, "a", sizearray(key) ))
             {
@@ -100,7 +94,7 @@ int main(void)
             printf( "HTTP/1.1 302 Object moved\n" );
 
             //Are we doing a whitelist pull, or app lookup?
-            if ((strlen(var_v2) != 0) && (strlen(var_a) != 0))
+            if (strlen(var_a) != 0)
             {
                 // v2 app lookup, push to googles server as they are not using our whitelist service
                 // TO-DO: Find all calls used by stock google so we can mimmic it here. For sure d and b are used -dd
@@ -133,7 +127,7 @@ int main(void)
         {
 
             //Are we doing a whitelist pull, or app lookup?
-            if ((strlen(var_v2) != 0) && (strlen(var_a) != 0))
+            if (strlen(var_a) != 0)
             {
                 // v2 app lookup using eureka server
                 // I hate doing this, but we need to have the hashed serial to test for a "test" device -dd
