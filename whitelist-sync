@@ -1,4 +1,4 @@
-#!/bin/busybox
+#!/bin/busybox sh
 
 # Name of application, shows up in logcat
 LogName="Whitelist-Sync"
@@ -20,7 +20,7 @@ pLog() {
 #######################################
 
 	pLog "Running $LogName"
-	
+
 	# Are we a part of the EurekaROM? If so, get info from the EurekaSettings app
 	if [ -f /usr/bin/EurekaSettings ]
 	then
@@ -28,9 +28,9 @@ pLog() {
 		if [ "$(EurekaSettings get WhiteList useSelection)" == "3" ]
 		then
 			URL="$(EurekaSettings get WhiteList customURL)"
-		fi		
+		fi
 	fi
-	
+
 	# Before we run for a update check, make sure our folder exists
 	if [ ! -d /data/eureka ]
 	then
@@ -44,5 +44,5 @@ pLog() {
 	else
 		pLog "Syncing with Whitelist Server"
 		busybox wget -q "$URL" -O /data/eureka/apps.conf
-		pLog "Updated AppList Downloaded Successfully"	
+		pLog "Updated AppList Downloaded Successfully"
 	fi
